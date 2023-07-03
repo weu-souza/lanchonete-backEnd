@@ -74,9 +74,13 @@ public class ChartController {
 
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<ChartDTO> delete(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Long> delete(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
         if (chartService.delete(id, userDetails)) {
-            return ResponseEntity.noContent().build();
+            URI uri = ServletUriComponentsBuilder
+                    .fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(id).toUri();
+
+            return ResponseEntity.created(uri).body(id);
         } else {
             return ResponseEntity.notFound().build();
         }

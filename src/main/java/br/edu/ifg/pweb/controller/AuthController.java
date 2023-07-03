@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @CrossOrigin("/login")
 public class AuthController {
@@ -23,10 +26,13 @@ public class AuthController {
 
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private HttpServletResponse response;
 
     @PostMapping("/login")
     @PreAuthorize("permitAll()")
     public String login(@RequestBody Login login) {
+
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(login.login(),
                         login.password());
@@ -36,6 +42,7 @@ public class AuthController {
 
         var user = (User) authenticate.getPrincipal();
         String token =  tokenService.gerarToken(user);
+
 
         return new Gson().toJson(token);
     }

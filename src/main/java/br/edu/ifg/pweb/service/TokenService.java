@@ -21,7 +21,7 @@ public class TokenService {
                 .withClaim("name", user.getName())
                 .withClaim("role", roles)
                 .withExpiresAt(LocalDateTime.now()
-                        .plusMinutes(30)
+                        .plusMinutes(30000000)
                         .toInstant(ZoneOffset.of("-03:00"))
                 ).sign(Algorithm.HMAC256("secreta"));
     }
