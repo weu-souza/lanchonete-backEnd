@@ -35,6 +35,7 @@ public class User implements UserDetails {
         setPassword(userDTO.getPassword());
     }
 
+
     public String getName() {
         return name;
     }

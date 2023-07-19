@@ -1,9 +1,6 @@
 package br.edu.ifg.pweb.controller;
 
-import br.edu.ifg.pweb.dto.CategoryDTO;
-import br.edu.ifg.pweb.dto.ChartDTO;
-import br.edu.ifg.pweb.dto.OfferDTO;
-import br.edu.ifg.pweb.dto.ProductDTO;
+import br.edu.ifg.pweb.dto.*;
 import br.edu.ifg.pweb.entity.Category;
 import br.edu.ifg.pweb.entity.Chart;
 import br.edu.ifg.pweb.entity.Product;
@@ -36,11 +33,21 @@ public class ChartController {
     @Autowired
     private ProductRepository productRepository;
 
+//    @GetMapping
+//    @PreAuthorize("hasAnyRole('user', 'admin')")
+//    public ResponseEntity<List<ChartDTO>> findAll(@AuthenticationPrincipal UserDetails userDetails) {
+//        List<ChartDTO> list = chartService.findAll(userDetails);
+//        return ResponseEntity.ok().body(list);
+//    }
     @GetMapping
     @PreAuthorize("hasAnyRole('user', 'admin')")
-    public ResponseEntity<List<ChartDTO>> findAll(@AuthenticationPrincipal UserDetails userDetails) {
-        List<ChartDTO> list = chartService.findAll(userDetails);
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<List<ChartDTO>> findByuser(@AuthenticationPrincipal UserDetails userDetails) {
+        List<ChartDTO> list = chartService.findByUser(userDetails);
+        if (list != null) {
+            return ResponseEntity.ok().body(list);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping(value = "/product/{id}")

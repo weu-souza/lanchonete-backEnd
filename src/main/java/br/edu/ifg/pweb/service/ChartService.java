@@ -42,11 +42,26 @@ public class ChartService {
                 .map(x -> new ChartDTO(x))
                 .collect(Collectors.toList());
     }
+    @Transactional(readOnly = true)
+    public List<ChartDTO> findByUser(UserDetails userDetails) {
+        try {
+            User user = userRepository.findByLogin(userDetails.getUsername());
+            List<Chart> list = chartRepository.findByUser(user);
+            logService.logAction("Searched products of category ", userDetails.getUsername(), LocalDateTime.now());
+            return list.stream()
+                    .map(x -> new ChartDTO(x))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     @Transactional
     public ChartDTO insertProduct(ChartDTO dto, long id, UserDetails userDetails) {
         try {
             Chart entity = new Chart(dto);
+           User user = userRepository.findByLogin(userDetails.getUsername());
+            entity.setUser(user);
             Product product = productRepository.findById(id);
             entity.setProduct(product);
             entity = chartRepository.save(entity);
@@ -56,12 +71,16 @@ public class ChartService {
             return null;
         }
     }
+
     @Transactional
     public ChartDTO insertOffer(ChartDTO dto, long id, UserDetails userDetails) {
         try {
+
             Chart entity = new Chart(dto);
             Offer offer = offerRepository.findById(id);
             entity.setOffer(offer);
+            User user = userRepository.findByLogin(userDetails.getUsername());
+            entity.setUser(user);
             entity = chartRepository.save(entity);
             logService.logAction("Created new chart", userDetails.getUsername(), LocalDateTime.now());
             return new ChartDTO(entity);

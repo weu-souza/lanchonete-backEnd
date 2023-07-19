@@ -25,6 +25,10 @@ public class Chart {
     @JoinColumn(name = "offer_id")
     private Offer offer;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private String name;
 
     private String ingredients;
@@ -33,12 +37,13 @@ public class Chart {
     public Chart() {
     }
 
-    public Chart(Long id, double price, String imageName, String name, String ingredients) {
+    public Chart(Long id, double price, String imageName, String name, String ingredients, User user) {
         this.id = id;
         this.price = price;
         this.imageName = imageName;
         this.name = name;
         this.ingredients = ingredients;
+        this.user = user;
     }
 
     public Chart(ChartDTO chartDTO) {
@@ -47,6 +52,7 @@ public class Chart {
         setPrice(chartDTO.getPrice());
         setImageName(chartDTO.getImageName());
         setIngredients(chartDTO.getIngredients());
+        setUser(getUser());
     }
 
     public Long getId() {
@@ -103,5 +109,13 @@ public class Chart {
 
     public void setIngredients(String ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
