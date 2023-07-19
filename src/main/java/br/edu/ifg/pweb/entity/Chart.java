@@ -21,7 +21,7 @@ public class Chart {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "offer_id")
     private Offer offer;
 

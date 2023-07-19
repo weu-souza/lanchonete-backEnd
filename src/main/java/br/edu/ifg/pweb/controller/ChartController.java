@@ -8,6 +8,7 @@ import br.edu.ifg.pweb.repository.ChartRepository;
 import br.edu.ifg.pweb.repository.ProductRepository;
 import br.edu.ifg.pweb.service.ChartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,12 +34,6 @@ public class ChartController {
     @Autowired
     private ProductRepository productRepository;
 
-//    @GetMapping
-//    @PreAuthorize("hasAnyRole('user', 'admin')")
-//    public ResponseEntity<List<ChartDTO>> findAll(@AuthenticationPrincipal UserDetails userDetails) {
-//        List<ChartDTO> list = chartService.findAll(userDetails);
-//        return ResponseEntity.ok().body(list);
-//    }
     @GetMapping
     @PreAuthorize("hasAnyRole('user', 'admin')")
     public ResponseEntity<List<ChartDTO>> findByuser(@AuthenticationPrincipal UserDetails userDetails) {
@@ -64,7 +59,9 @@ public class ChartController {
             return ResponseEntity.badRequest().build();
         }
     }
+
     @PostMapping(value = "/offer/{id}")
+
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<ChartDTO> insertOffer(@PathVariable long id, @RequestBody ChartDTO dto, @AuthenticationPrincipal UserDetails userDetails) {
         dto = chartService.insertOffer(dto, id, userDetails);
@@ -93,5 +90,10 @@ public class ChartController {
         }
     }
 
-
+    @DeleteMapping
+    @PreAuthorize("hasRole('admin')")
+    public ResponseEntity<Void> deleteAll(@AuthenticationPrincipal UserDetails userDetails) {
+        chartService.deleteAll(userDetails);
+        return ResponseEntity.ok().build();
+    }
 }

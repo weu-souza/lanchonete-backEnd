@@ -4,6 +4,7 @@ import br.edu.ifg.pweb.dto.*;
 import br.edu.ifg.pweb.entity.*;
 import br.edu.ifg.pweb.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,20 +29,10 @@ public class ChartService {
     @Autowired
     private OfferRepository offerRepository;
 
-    @Autowired
-    private SaleRepository saleRepository;
 
     @Autowired
     private LogService logService;
 
-    @Transactional(readOnly = true)
-    public List<ChartDTO> findAll(UserDetails userDetails) {
-        List<Chart> list = chartRepository.findAll();
-        logService.logAction("Searched all chart", userDetails.getUsername(), LocalDateTime.now());
-        return list.stream()
-                .map(x -> new ChartDTO(x))
-                .collect(Collectors.toList());
-    }
     @Transactional(readOnly = true)
     public List<ChartDTO> findByUser(UserDetails userDetails) {
         try {
@@ -60,7 +51,7 @@ public class ChartService {
     public ChartDTO insertProduct(ChartDTO dto, long id, UserDetails userDetails) {
         try {
             Chart entity = new Chart(dto);
-           User user = userRepository.findByLogin(userDetails.getUsername());
+            User user = userRepository.findByLogin(userDetails.getUsername());
             entity.setUser(user);
             Product product = productRepository.findById(id);
             entity.setProduct(product);
@@ -89,8 +80,10 @@ public class ChartService {
         }
     }
 
+    @Transactional
     public boolean delete(Long id, UserDetails userDetails) {
         try {
+
             chartRepository.deleteById(id);
             logService.logAction("Deleted chart " + id, userDetails.getUsername(), LocalDateTime.now());
             return true;
@@ -98,5 +91,12 @@ public class ChartService {
             return false;
         }
 
+    }
+
+    @Transactional
+    public void deleteAll(UserDetails userDetails) {
+        User user = userRepository.findByLogin(userDetails.getUsername());
+        chartRepository.deleteByUser(user.getId());
+        logService.logAction("Deleted all chart ", userDetails.getUsername(), LocalDateTime.now());
     }
 }
