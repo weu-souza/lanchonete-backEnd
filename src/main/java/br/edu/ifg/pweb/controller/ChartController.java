@@ -61,7 +61,6 @@ public class ChartController {
     }
 
     @PostMapping(value = "/offer/{id}")
-
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<ChartDTO> insertOffer(@PathVariable long id, @RequestBody ChartDTO dto, @AuthenticationPrincipal UserDetails userDetails) {
         dto = chartService.insertOffer(dto, id, userDetails);
@@ -77,7 +76,7 @@ public class ChartController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAnyRole('user', 'admin')")
     public ResponseEntity<Long> delete(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
         if (chartService.delete(id, userDetails)) {
             URI uri = ServletUriComponentsBuilder
@@ -91,7 +90,7 @@ public class ChartController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAnyRole('user', 'admin')")
     public ResponseEntity<Void> deleteAll(@AuthenticationPrincipal UserDetails userDetails) {
         chartService.deleteAll(userDetails);
         return ResponseEntity.ok().build();
