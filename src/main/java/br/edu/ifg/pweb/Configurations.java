@@ -34,7 +34,7 @@ public class Configurations implements WebMvcConfigurer {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/h2/**");
+        return (web) -> web.ignoring().antMatchers("permitAll");
     }
 
     @Bean
